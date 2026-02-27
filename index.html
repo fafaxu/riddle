@@ -1,0 +1,1647 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>灯谜大会</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', sans-serif;
+            background: linear-gradient(135deg, #f5f5f5 0%, #e8e8e8 100%);
+            min-height: 100vh;
+            color: #333;
+        }
+
+        /* 登录页面 */
+        .login-page {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            min-height: 100vh;
+            padding: 20px;
+            background: linear-gradient(135deg, #c41e3a 0%, #8b0000 100%);
+        }
+
+        .login-logo {
+            width: 120px;
+            height: 120px;
+            background: white;
+            border-radius: 24px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 30px;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.3);
+        }
+
+        .login-logo span {
+            font-size: 60px;
+        }
+
+        .login-title {
+            color: white;
+            font-size: 28px;
+            font-weight: bold;
+            margin-bottom: 10px;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+        }
+
+        .login-subtitle {
+            color: rgba(255,255,255,0.9);
+            font-size: 16px;
+            margin-bottom: 50px;
+        }
+
+        .login-form {
+            width: 100%;
+            max-width: 300px;
+        }
+
+        .login-input {
+            width: 100%;
+            padding: 15px 20px;
+            border: none;
+            border-radius: 8px;
+            font-size: 16px;
+            margin-bottom: 15px;
+            text-align: center;
+        }
+
+        .login-btn {
+            width: 100%;
+            background: #ffd700;
+            color: #8b0000;
+            border: none;
+            padding: 15px;
+            border-radius: 8px;
+            font-size: 18px;
+            font-weight: bold;
+            cursor: pointer;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.3);
+            transition: all 0.3s;
+        }
+
+        .login-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(0,0,0,0.4);
+        }
+
+        /* 主页面 */
+        .main-page {
+            display: none;
+            min-height: 100vh;
+            background: #f5f5f5;
+        }
+
+        .header {
+            background: linear-gradient(135deg, #c41e3a 0%, #8b0000 100%);
+            color: white;
+            padding: 20px 20px 30px;
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .header h1 {
+            font-size: 24px;
+            margin-bottom: 8px;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+        }
+
+        .header p {
+            font-size: 13px;
+            opacity: 0.9;
+        }
+
+        .user-info {
+            background: white;
+            margin: -20px 15px 15px;
+            padding: 18px 20px;
+            border-radius: 16px;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.12);
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            position: relative;
+            z-index: 10;
+        }
+
+        .user-avatar {
+            width: 65px;
+            height: 65px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #ff9a9e 0%, #fecfef 100%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+            box-shadow: 0 4px 15px rgba(255, 154, 158, 0.4);
+        }
+
+        .avatar-emoji {
+            font-size: 35px;
+        }
+
+        .avatar-ring {
+            position: absolute;
+            top: -4px;
+            left: -4px;
+            right: -4px;
+            bottom: -4px;
+            border: 2px dashed #c41e3a;
+            border-radius: 50%;
+            animation: spin 10s linear infinite;
+        }
+
+        @keyframes spin {
+            from { transform: rotate(0deg); }
+            to { transform: rotate(360deg); }
+        }
+
+        .user-details {
+            flex: 1;
+        }
+
+        .user-details h3 {
+            font-size: 18px;
+            margin-bottom: 5px;
+            color: #333;
+        }
+
+        .user-level {
+            display: inline-block;
+            background: linear-gradient(135deg, #c41e3a 0%, #ff6b6b 100%);
+            color: white;
+            padding: 3px 12px;
+            border-radius: 15px;
+            font-size: 11px;
+            font-weight: bold;
+        }
+
+        .user-badges {
+            margin-top: 6px;
+            display: flex;
+            gap: 5px;
+        }
+
+        .badge {
+            font-size: 16px;
+        }
+
+        .user-rank {
+            text-align: center;
+            padding-left: 15px;
+            border-left: 1px dashed #ddd;
+        }
+
+        .rank-badge {
+            background: linear-gradient(135deg, #ffd700 0%, #ffed4e 100%);
+            color: #333;
+            padding: 5px 12px;
+            border-radius: 20px;
+            font-weight: bold;
+            font-size: 14px;
+            box-shadow: 0 2px 8px rgba(255, 215, 0, 0.4);
+        }
+
+        .rank-text {
+            font-size: 11px;
+            color: #999;
+            margin-top: 4px;
+        }
+
+        /* 快速开始 - 置顶并增加浅红色渐变底色 */
+        .quick-actions {
+            background: linear-gradient(135deg, #fff5f5 0%, #ffe0e0 100%);
+            margin: 0 15px 15px;
+            padding: 20px;
+            border-radius: 16px;
+            box-shadow: 0 3px 15px rgba(0,0,0,0.08);
+            border: 1px solid rgba(196, 30, 58, 0.1);
+        }
+
+        .quick-action-title {
+            font-size: 14px;
+            color: #c41e3a;
+            margin-bottom: 15px;
+            text-align: center;
+            font-weight: 600;
+        }
+
+        .action-buttons {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+        }
+
+        .action-btn {
+            background: white;
+            border: 2px solid transparent;
+            padding: 20px 15px;
+            border-radius: 16px;
+            cursor: pointer;
+            transition: all 0.3s;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.08);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 8px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .action-btn:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 25px rgba(0,0,0,0.15);
+            border-color: rgba(196, 30, 58, 0.3);
+        }
+
+        .action-btn .icon {
+            width: 55px;
+            height: 55px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 28px;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+            transition: all 0.3s;
+        }
+
+        .action-btn:hover .icon {
+            transform: scale(1.1) rotate(5deg);
+        }
+
+        .action-btn.create .icon {
+            background: linear-gradient(135deg, #c41e3a 0%, #ff6b6b 100%);
+        }
+
+        .action-btn.answer .icon {
+            background: linear-gradient(135deg, #ff9a9e 0%, #fecfef 100%);
+        }
+
+        .btn-emoji {
+            filter: drop-shadow(0 2px 4px rgba(0,0,0,0.2));
+        }
+
+        .btn-text {
+            font-size: 16px;
+            font-weight: bold;
+            color: #333;
+            margin-top: 5px;
+        }
+
+        .btn-desc {
+            font-size: 11px;
+            color: #999;
+        }
+
+        /* 统计区域 - 放在快速开始下面 */
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 10px;
+            margin: 0 15px 15px;
+        }
+
+        .stat-card {
+            background: white;
+            padding: 15px 10px;
+            border-radius: 12px;
+            text-align: center;
+            box-shadow: 0 3px 10px rgba(0,0,0,0.08);
+            transition: all 0.3s;
+        }
+
+        .stat-card:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 5px 20px rgba(0,0,0,0.12);
+        }
+
+        .stat-value {
+            font-size: 22px;
+            font-weight: bold;
+            color: #c41e3a;
+            background: linear-gradient(135deg, #c41e3a 0%, #ff6b6b 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .stat-label {
+            font-size: 11px;
+            color: #999;
+            margin-top: 5px;
+        }
+
+        /* 页面内容 */
+        .page-content {
+            display: none;
+            min-height: 100vh;
+            background: #f5f5f5;
+        }
+
+        .page-header {
+            background: linear-gradient(135deg, #c41e3a 0%, #8b0000 100%);
+            color: white;
+            padding: 15px 20px;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .back-btn {
+            background: rgba(255,255,255,0.2);
+            border: none;
+            color: white;
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            cursor: pointer;
+            font-size: 18px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .page-header h2 {
+            font-size: 18px;
+            flex: 1;
+        }
+
+        .content-area {
+            padding: 15px;
+        }
+
+        /* 出题页面 */
+        .form-group {
+            background: white;
+            padding: 15px;
+            border-radius: 10px;
+            margin-bottom: 15px;
+        }
+
+        .form-group label {
+            display: block;
+            font-size: 14px;
+            color: #666;
+            margin-bottom: 8px;
+        }
+
+        .form-group input,
+        .form-group textarea {
+            width: 100%;
+            padding: 12px;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            font-size: 16px;
+            font-family: inherit;
+        }
+
+        .form-group textarea {
+            min-height: 100px;
+            resize: vertical;
+        }
+
+        /* AI出题按钮置顶 */
+        .ai-section {
+            background: linear-gradient(135deg, #f8f9ff 0%, #f0f4ff 100%);
+            padding: 20px;
+            border-radius: 10px;
+            margin-bottom: 15px;
+            border: 1px solid rgba(102, 126, 234, 0.2);
+        }
+
+        .ai-generate-btn {
+            width: 100%;
+            padding: 15px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            border-radius: 10px;
+            font-size: 16px;
+            font-weight: bold;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            transition: all 0.3s;
+            box-shadow: 0 4px 15px rgba(102, 126, 234, 0.4);
+        }
+
+        .ai-generate-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(102, 126, 234, 0.5);
+        }
+
+        .ai-hint {
+            text-align: center;
+            font-size: 12px;
+            color: #999;
+            margin-top: 10px;
+        }
+
+        /* 开关样式 */
+        .switch-label {
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+
+        .switch-container {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-top: 8px;
+        }
+
+        .switch {
+            position: relative;
+            display: inline-block;
+            width: 50px;
+            height: 28px;
+        }
+
+        .switch input {
+            opacity: 0;
+            width: 0;
+            height: 0;
+        }
+
+        .slider {
+            position: absolute;
+            cursor: pointer;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: #ccc;
+            transition: .4s;
+            border-radius: 28px;
+        }
+
+        .slider:before {
+            position: absolute;
+            content: "";
+            height: 22px;
+            width: 22px;
+            left: 3px;
+            bottom: 3px;
+            background-color: white;
+            transition: .4s;
+            border-radius: 50%;
+        }
+
+        .switch input:checked + .slider {
+            background-color: #c41e3a;
+        }
+
+        .switch input:checked + .slider:before {
+            transform: translateX(22px);
+        }
+
+        .switch-text {
+            font-size: 14px;
+            color: #666;
+        }
+
+        .submit-btn {
+            background: linear-gradient(135deg, #c41e3a 0%, #8b0000 100%);
+            color: white;
+            border: none;
+            padding: 15px;
+            border-radius: 10px;
+            font-size: 16px;
+            font-weight: bold;
+            cursor: pointer;
+            width: 100%;
+            margin-top: 10px;
+        }
+
+        /* 答题页面 */
+        .riddle-card {
+            background: white;
+            padding: 20px;
+            border-radius: 12px;
+            margin-bottom: 15px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.08);
+        }
+
+        .riddle-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 15px;
+        }
+
+        .riddle-author {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .author-avatar {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 20px;
+        }
+
+        .author-name {
+            font-weight: 500;
+        }
+
+        .riddle-type {
+            background: #f0f0f0;
+            padding: 4px 12px;
+            border-radius: 12px;
+            font-size: 12px;
+            color: #666;
+        }
+
+        .riddle-content {
+            font-size: 18px;
+            line-height: 1.8;
+            color: #333;
+            padding: 15px;
+            background: #fafafa;
+            border-radius: 8px;
+            margin-bottom: 15px;
+        }
+
+        .hint-box {
+            background: #fff3cd;
+            border-left: 4px solid #ffc107;
+            padding: 12px;
+            border-radius: 0 8px 8px 0;
+            margin-bottom: 15px;
+        }
+
+        .hint-box strong {
+            color: #856404;
+        }
+
+        .answer-section {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 15px;
+        }
+
+        .answer-section input {
+            flex: 1;
+            padding: 12px;
+            border: 2px solid #ddd;
+            border-radius: 8px;
+            font-size: 16px;
+        }
+
+        .answer-btn {
+            background: #c41e3a;
+            color: white;
+            border: none;
+            padding: 12px 25px;
+            border-radius: 8px;
+            font-size: 16px;
+            cursor: pointer;
+        }
+
+        .skip-btn {
+            background: #f0f0f0;
+            color: #666;
+            border: none;
+            padding: 12px 25px;
+            border-radius: 8px;
+            font-size: 16px;
+            cursor: pointer;
+            width: 100%;
+        }
+
+        .skip-btn:hover {
+            background: #e0e0e0;
+        }
+
+        /* 敲鼓动画 */
+        .drum-animation {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0,0,0,0.8);
+            z-index: 1000;
+            align-items: center;
+            justify-content: center;
+            flex-direction: column;
+        }
+
+        .drum-animation.show {
+            display: flex;
+        }
+
+        .drum-scene {
+            position: relative;
+            width: 300px;
+            height: 300px;
+        }
+
+        .drum {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 180px;
+            height: 180px;
+        }
+
+        .drum-body {
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(145deg, #c41e3a 0%, #8b0000 100%);
+            border-radius: 50%;
+            position: relative;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+        }
+
+        .drum-face {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 140px;
+            height: 140px;
+            background: #f5f5dc;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border: 8px solid #d4af37;
+        }
+
+        .drum-pattern {
+            font-size: 60px;
+            color: #c41e3a;
+            font-weight: bold;
+        }
+
+        .drum-stand {
+            position: absolute;
+            bottom: -40px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 20px;
+            height: 60px;
+            background: #8b4513;
+            border-radius: 0 0 5px 5px;
+        }
+
+        .drumstick {
+            position: absolute;
+            width: 80px;
+            height: 10px;
+            transform-origin: right center;
+        }
+
+        .drumstick.left {
+            top: 30%;
+            left: 20px;
+            transform: rotate(-30deg);
+            animation: hitLeft 0.5s ease-in-out 3;
+        }
+
+        .drumstick.right {
+            top: 30%;
+            right: 20px;
+            transform: rotate(30deg) scaleX(-1);
+            animation: hitRight 0.5s ease-in-out 3;
+        }
+
+        .stick {
+            width: 70px;
+            height: 8px;
+            background: linear-gradient(to right, #8b4513, #d2691e);
+            border-radius: 4px;
+        }
+
+        .head {
+            position: absolute;
+            right: -5px;
+            top: -6px;
+            width: 20px;
+            height: 20px;
+            background: #d2691e;
+            border-radius: 50%;
+        }
+
+        @keyframes hitLeft {
+            0%, 100% { transform: rotate(-30deg); }
+            50% { transform: rotate(-50deg); }
+        }
+
+        @keyframes hitRight {
+            0%, 100% { transform: rotate(30deg) scaleX(-1); }
+            50% { transform: rotate(50deg) scaleX(-1); }
+        }
+
+        .sound-waves {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+        }
+
+        .wave {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 180px;
+            height: 180px;
+            border: 3px solid #ffd700;
+            border-radius: 50%;
+            opacity: 0;
+        }
+
+        .wave1 { animation: wave 1s ease-out 3; }
+        .wave2 { animation: wave 1s ease-out 0.3s 3; }
+        .wave3 { animation: wave 1s ease-out 0.6s 3; }
+
+        @keyframes wave {
+            0% { transform: translate(-50%, -50%) scale(1); opacity: 0.8; }
+            100% { transform: translate(-50%, -50%) scale(2); opacity: 0; }
+        }
+
+        .congrats-text {
+            color: #ffd700;
+            font-size: 28px;
+            font-weight: bold;
+            margin-top: 30px;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.5);
+            animation: bounce 0.5s ease-in-out 3;
+        }
+
+        @keyframes bounce {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-10px); }
+        }
+
+        /* 历史记录 */
+        .history-list {
+            background: white;
+            border-radius: 12px;
+            overflow: hidden;
+        }
+
+        .history-item {
+            padding: 15px;
+            border-bottom: 1px solid #f0f0f0;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .history-item:last-child {
+            border-bottom: none;
+        }
+
+        .history-info h4 {
+            font-size: 14px;
+            margin-bottom: 5px;
+        }
+
+        .history-info p {
+            font-size: 12px;
+            color: #999;
+        }
+
+        .history-result {
+            padding: 4px 12px;
+            border-radius: 12px;
+            font-size: 12px;
+        }
+
+        .history-result.correct {
+            background: #d4edda;
+            color: #155724;
+        }
+
+        .history-result.wrong {
+            background: #f8d7da;
+            color: #721c24;
+        }
+
+        /* 排行榜空状态 */
+        .rank-empty {
+            text-align: center;
+            padding: 60px 20px;
+            color: #999;
+            background: white;
+            border-radius: 12px;
+        }
+
+        .rank-empty .icon {
+            font-size: 80px;
+            margin-bottom: 20px;
+        }
+
+        .rank-empty p {
+            font-size: 16px;
+        }
+
+        /* 底部导航 */
+        .bottom-nav {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background: white;
+            display: flex;
+            justify-content: space-around;
+            padding: 10px 0;
+            box-shadow: 0 -2px 10px rgba(0,0,0,0.1);
+        }
+
+        .nav-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 5px;
+            padding: 5px 20px;
+            cursor: pointer;
+            color: #999;
+            transition: color 0.3s;
+        }
+
+        .nav-item.active {
+            color: #c41e3a;
+        }
+
+        .nav-item span:first-child {
+            font-size: 24px;
+        }
+
+        .nav-item span:last-child {
+            font-size: 12px;
+        }
+
+        .main-page.with-nav {
+            padding-bottom: 70px;
+        }
+
+        /* 空状态 */
+        .empty-state {
+            text-align: center;
+            padding: 60px 20px;
+            color: #999;
+        }
+
+        .empty-state .icon {
+            font-size: 60px;
+            margin-bottom: 15px;
+        }
+
+        .empty-state p {
+            font-size: 14px;
+        }
+    </style>
+</head>
+<body>
+    <!-- 登录页面 -->
+    <div class="login-page" id="loginPage">
+        <div class="login-logo">
+            <span>🏮</span>
+        </div>
+        <h1 class="login-title">潮汕灯谜</h1>
+        <p class="login-subtitle">传承文化 · 欢乐共享</p>
+        <div class="login-form">
+            <input type="text" class="login-input" id="usernameInput" placeholder="请输入您的昵称" maxlength="10">
+            <button class="login-btn" onclick="login()">开始游戏</button>
+        </div>
+    </div>
+
+    <!-- 主页面 -->
+    <div class="main-page with-nav" id="mainPage">
+        <div class="header">
+            <h1>🏮 灯谜大会</h1>
+            <p>传承传统文化，共享灯谜乐趣</p>
+        </div>
+
+        <div class="user-info">
+            <div class="user-avatar" id="userAvatar">
+                <span class="avatar-emoji">🎭</span>
+                <div class="avatar-ring"></div>
+            </div>
+            <div class="user-details">
+                <h3 id="userName">谜友</h3>
+                <span class="user-level" id="userLevel">初级谜友</span>
+                <div class="user-badges">
+                    <span class="badge" title="连续登录">🔥</span>
+                    <span class="badge" title="猜谜达人">⭐</span>
+                </div>
+            </div>
+            <div class="user-rank">
+                <div class="rank-badge">NO.<span id="userRank">99+</span></div>
+                <div class="rank-text">当前排名</div>
+            </div>
+        </div>
+
+        <!-- 快速开始模块置顶 -->
+        <div class="quick-actions">
+            <div class="quick-action-title">✨ 快速开始</div>
+            <div class="action-buttons">
+                <button class="action-btn create" onclick="showCreatePage()">
+                    <div class="icon">
+                        <span class="btn-emoji">✏️</span>
+                    </div>
+                    <span class="btn-text">我要出题</span>
+                    <span class="btn-desc">创作有趣谜题</span>
+                </button>
+                <button class="action-btn answer" onclick="showAnswerPage()">
+                    <div class="icon">
+                        <span class="btn-emoji">🎯</span>
+                    </div>
+                    <span class="btn-text">我要答题</span>
+                    <span class="btn-desc">挑战智慧极限</span>
+                </button>
+            </div>
+        </div>
+
+        <!-- 统计数据放在快速开始下面 -->
+        <div class="stats-grid">
+            <div class="stat-card">
+                <div class="stat-value" id="userPoints">0</div>
+                <div class="stat-label">积分</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-value" id="streakCount">0</div>
+                <div class="stat-label">连续答对</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-value" id="riddleCount">0</div>
+                <div class="stat-label">已出谜题</div>
+            </div>
+        </div>
+
+        <div class="bottom-nav">
+            <div class="nav-item active" onclick="showMainPage()">
+                <span>🏠</span>
+                <span>首页</span>
+            </div>
+            <div class="nav-item" onclick="showRankPage()">
+                <span>🏆</span>
+                <span>排行榜</span>
+            </div>
+            <div class="nav-item" onclick="showHistoryPage()">
+                <span>📜</span>
+                <span>记录</span>
+            </div>
+        </div>
+    </div>
+
+    <!-- 出题页面 -->
+    <div class="page-content" id="createPage">
+        <div class="page-header">
+            <button class="back-btn" onclick="showMainPage()">←</button>
+            <h2>我要出题</h2>
+        </div>
+        <div class="content-area">
+            <!-- AI出题按钮置顶 -->
+            <div class="ai-section">
+                <button type="button" class="ai-generate-btn" onclick="generateRiddleWithAI()">
+                    <span>✨</span>
+                    <span>AI 智能出题</span>
+                </button>
+                <p class="ai-hint">点击按钮，AI将为您生成一道符合中国传统灯谜规则的谜题</p>
+            </div>
+            <div class="form-group">
+                <label>谜面</label>
+                <textarea id="riddleQuestion" placeholder="请输入谜面，例如：一口咬掉牛尾巴"></textarea>
+            </div>
+            <div class="form-group">
+                <label>谜底</label>
+                <input type="text" id="riddleAnswer" placeholder="请输入谜底，例如：告">
+            </div>
+            <div class="form-group">
+                <label>提示（可选）</label>
+                <input type="text" id="riddleHint" placeholder="给猜谜者一些提示">
+            </div>
+            <div class="form-group">
+                <label>谜目</label>
+                <input type="text" id="riddleType" placeholder="请输入谜目，例如：字谜、成语、动物等">
+            </div>
+            <div class="form-group">
+                <label class="switch-label">
+                    <span>儿童谜</span>
+                    <span style="font-size: 12px; color: #999; font-weight: normal;">（题目较简单）</span>
+                </label>
+                <div class="switch-container">
+                    <label class="switch">
+                        <input type="checkbox" id="isKidsRiddle">
+                        <span class="slider"></span>
+                    </label>
+                    <span class="switch-text" id="switchText">关闭</span>
+                </div>
+            </div>
+            <button class="submit-btn" onclick="createRiddle()">发布谜题</button>
+        </div>
+    </div>
+
+    <!-- 答题页面 -->
+    <div class="page-content" id="answerPage">
+        <div class="page-header">
+            <button class="back-btn" onclick="showMainPage()">←</button>
+            <h2>我要答题</h2>
+        </div>
+        <div class="content-area" id="answerContent">
+            <div class="empty-state">
+                <div class="icon">🎯</div>
+                <p>暂无待答谜题，稍后再来吧！</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- 排行榜页面 -->
+    <div class="page-content" id="rankPage">
+        <div class="page-header">
+            <button class="back-btn" onclick="showMainPage()">←</button>
+            <h2>🏆 排行榜</h2>
+        </div>
+        <div class="content-area">
+            <div class="rank-container" id="rankContainer">
+                <!-- 排行榜内容 -->
+            </div>
+        </div>
+    </div>
+
+    <!-- 历史记录页面 -->
+    <div class="page-content" id="historyPage">
+        <div class="page-header">
+            <button class="back-btn" onclick="showMainPage()">←</button>
+            <h2>我的记录</h2>
+        </div>
+        <div class="content-area">
+            <div class="history-list" id="historyList">
+                <div class="empty-state">
+                    <div class="icon">📜</div>
+                    <p>暂无记录，开始你的灯谜之旅吧！</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 敲鼓动画 -->
+    <div class="drum-animation" id="drumAnimation">
+        <div class="drum-scene">
+            <div class="drum">
+                <div class="drum-body">
+                    <div class="drum-face">
+                        <span class="drum-pattern">🏮</span>
+                    </div>
+                </div>
+                <div class="drum-stand"></div>
+            </div>
+            <div class="drumstick left">
+                <div class="stick"></div>
+                <div class="head"></div>
+            </div>
+            <div class="drumstick right">
+                <div class="stick"></div>
+                <div class="head"></div>
+            </div>
+            <div class="sound-waves">
+                <div class="wave wave1"></div>
+                <div class="wave wave2"></div>
+                <div class="wave wave3"></div>
+            </div>
+        </div>
+        <div class="congrats-text">🎉 恭喜答对！🎉</div>
+    </div>
+
+    <script>
+        // 数据存储
+        let currentUser = null;
+        let riddles = JSON.parse(localStorage.getItem('riddles') || '[]');
+        let history = JSON.parse(localStorage.getItem('history') || '[]');
+        let answeredRiddles = JSON.parse(localStorage.getItem('answeredRiddles') || '[]');
+        let allUsers = JSON.parse(localStorage.getItem('allUsers') || '[]');
+
+        // 预置谜题数据（10道新谜题）
+        const sampleRiddles = [
+            { id: 1, question: '一口咬掉牛尾巴', answer: '告', hint: '牛字下面加口', type: '字谜', author: '系统', authorAvatar: '🤖' },
+            { id: 2, question: '千里相逢', answer: '重', hint: '千+里', type: '字谜', author: '系统', authorAvatar: '🤖' },
+            { id: 3, question: '画时圆，写时方，冬时短，夏时长', answer: '日', hint: '天上的', type: '字谜', author: '系统', authorAvatar: '🤖' },
+            { id: 4, question: '左边绿，右边红，左右相遇起凉风', answer: '秋', hint: '禾+火', type: '字谜', author: '系统', authorAvatar: '🤖' },
+            { id: 5, question: '十个哥哥', answer: '克', hint: '十+兄', type: '字谜', author: '系统', authorAvatar: '🤖' },
+            { id: 6, question: '耳朵长，尾巴短，只吃菜，不吃饭', answer: '兔子', hint: '蹦蹦跳跳', type: '动物', author: '系统', authorAvatar: '🤖' },
+            { id: 7, question: '身穿花衣爱打扮，一对翅膀光闪闪', answer: '蝴蝶', hint: '会飞的昆虫', type: '动物', author: '系统', authorAvatar: '🤖' },
+            { id: 8, question: '有面没有口，有脚没有手', answer: '桌子', hint: '家具', type: '物品', author: '系统', authorAvatar: '🤖' },
+            { id: 9, question: '独木造高楼，没瓦没砖头', answer: '伞', hint: '遮雨用', type: '物品', author: '系统', authorAvatar: '🤖' },
+            { id: 10, question: '最快的速度', answer: '一日千里', hint: '一天能跑千里', type: '成语', author: '系统', authorAvatar: '🤖' }
+        ];
+
+        // 初始化
+        function init() {
+            // 加载示例谜题（如果没有的话）
+            if (riddles.length === 0) {
+                riddles = [...sampleRiddles];
+                saveRiddles();
+            }
+
+            // 检查登录状态
+            const savedUser = localStorage.getItem('currentUser');
+            if (savedUser) {
+                currentUser = JSON.parse(savedUser);
+                showMainPage();
+                updateUserInfo();
+            }
+        }
+
+        // 头像库
+        const avatarPool = ['🐶', '🐱', '🐭', '🐹', '🐰', '🦊', '🐻', '🐼', '🐨', '🐯', '🦁', '🐮', '🐷', '🐸', '🐵', '🐔', '🐧', '🐦', '🐤', '🦆', '🦅', '🦉', '🦇', '🐺', '🐗', '🐴', '🦄', '🐝', '🐛', '🦋', '🐌', '🐞', '🐜', '🦟', '🦗', '🕷', '🦂', '🐢', '🐍', '🦎', '🦖', '🦕', '🐙', '🦑', '🦐', '🦞', '🦀', '🐡', '🐠', '🐟', '🐬', '🐳', '🐋', '🦈', '🐊', '🐅', '🐆', '🦓', '🦍', '🦧', '🐘', '🦛', '🦏', '🐪', '🐫', '🦒', '🦘', '🐃', '🐂', '🐄', '🐎', '🐖', '🐏', '🐑', '🦙', '🐐', '🦌', '🐕', '🐩', '🦮', '🐕‍🦺', '🐈', '🐈‍⬛', '🐓', '🦃', '🦚', '🦜', '🦢', '🦩', '🕊', '🐇', '🦝', '🦨', '🦡', '🦦', '🦥', '🐁', '🐀', '🦔'];
+
+        // 获取随机头像（尽量不重复）
+        function getRandomAvatar() {
+            // 获取已被使用的头像
+            const usedAvatars = allUsers.map(u => u.avatar);
+            // 过滤出未使用的头像
+            const availableAvatars = avatarPool.filter(a => !usedAvatars.includes(a));
+            
+            // 如果所有头像都被使用了，就从全部中随机选一个
+            const pool = availableAvatars.length > 0 ? availableAvatars : avatarPool;
+            const randomIndex = Math.floor(Math.random() * pool.length);
+            return pool[randomIndex];
+        }
+
+        // 登录
+        function login() {
+            const username = document.getElementById('usernameInput').value.trim();
+            if (!username) {
+                alert('请输入昵称！');
+                return;
+            }
+
+            // 保存到所有用户列表
+            const existingUser = allUsers.find(u => u.name === username);
+            if (!existingUser) {
+                // 新用户，分配随机头像
+                currentUser = {
+                    name: username,
+                    avatar: getRandomAvatar(),
+                    level: '初级谜友',
+                    points: 0,
+                    streak: 0,
+                    riddleCount: 0
+                };
+                allUsers.push({...currentUser});
+                localStorage.setItem('allUsers', JSON.stringify(allUsers));
+            } else {
+                // 老用户，使用之前的头像
+                currentUser = {...existingUser};
+            }
+            
+            localStorage.setItem('currentUser', JSON.stringify(currentUser));
+            showMainPage();
+            updateUserInfo();
+        }
+
+        // 显示主页面
+        function showMainPage() {
+            hideAllPages();
+            document.getElementById('mainPage').style.display = 'block';
+            updateNavActive('main');
+        }
+
+        // 显示出题页面
+        function showCreatePage() {
+            hideAllPages();
+            document.getElementById('createPage').style.display = 'block';
+        }
+
+        // 显示答题页面
+        function showAnswerPage() {
+            hideAllPages();
+            document.getElementById('answerPage').style.display = 'block';
+            loadAnswerRiddle();
+        }
+
+        // 显示历史记录页面
+        function showHistoryPage() {
+            hideAllPages();
+            document.getElementById('historyPage').style.display = 'block';
+            loadHistory();
+            updateNavActive('history');
+        }
+
+        // 显示排行榜页面
+        function showRankPage() {
+            hideAllPages();
+            document.getElementById('rankPage').style.display = 'block';
+            loadRankList();
+            updateNavActive('rank');
+        }
+
+        // 隐藏所有页面
+        function hideAllPages() {
+            document.getElementById('loginPage').style.display = 'none';
+            document.getElementById('mainPage').style.display = 'none';
+            document.getElementById('createPage').style.display = 'none';
+            document.getElementById('answerPage').style.display = 'none';
+            document.getElementById('rankPage').style.display = 'none';
+            document.getElementById('historyPage').style.display = 'none';
+        }
+
+        // 更新导航状态
+        function updateNavActive(page) {
+            document.querySelectorAll('.nav-item').forEach(item => {
+                item.classList.remove('active');
+            });
+            if (page === 'main') {
+                document.querySelectorAll('.nav-item')[0].classList.add('active');
+            } else if (page === 'rank') {
+                document.querySelectorAll('.nav-item')[1].classList.add('active');
+            } else if (page === 'history') {
+                document.querySelectorAll('.nav-item')[2].classList.add('active');
+            }
+        }
+
+        // 更新用户信息
+        function updateUserInfo() {
+            if (currentUser) {
+                document.getElementById('userName').textContent = currentUser.name;
+                document.getElementById('userLevel').textContent = currentUser.level;
+                document.getElementById('userPoints').textContent = currentUser.points;
+                document.getElementById('streakCount').textContent = currentUser.streak;
+                document.getElementById('riddleCount').textContent = currentUser.riddleCount;
+            }
+        }
+
+        // 创建谜题
+        function createRiddle() {
+            const question = document.getElementById('riddleQuestion').value.trim();
+            const answer = document.getElementById('riddleAnswer').value.trim();
+            const hint = document.getElementById('riddleHint').value.trim();
+            const type = document.getElementById('riddleType').value.trim() || '其他';
+            const isKidsRiddle = document.getElementById('isKidsRiddle').checked;
+
+            if (!question || !answer) {
+                alert('请填写谜面和谜底！');
+                return;
+            }
+
+            const newRiddle = {
+                id: Date.now(),
+                question,
+                answer,
+                hint: hint || '暂无提示',
+                type: isKidsRiddle ? `📚 ${type}` : type,
+                author: currentUser.name,
+                authorAvatar: currentUser.avatar,
+                isKids: isKidsRiddle
+            };
+
+            riddles.unshift(newRiddle);
+            saveRiddles();
+
+            currentUser.riddleCount++;
+            // 出题加5分
+            currentUser.points += 5;
+            saveUser();
+
+            // 清空表单
+            document.getElementById('riddleQuestion').value = '';
+            document.getElementById('riddleAnswer').value = '';
+            document.getElementById('riddleHint').value = '';
+            document.getElementById('riddleType').value = '';
+            document.getElementById('isKidsRiddle').checked = false;
+            document.getElementById('switchText').textContent = '关闭';
+
+            alert('谜题发布成功！获得5积分！');
+            showMainPage();
+        }
+
+        // 儿童谜开关切换
+        document.addEventListener('DOMContentLoaded', function() {
+            const kidsSwitch = document.getElementById('isKidsRiddle');
+            const switchText = document.getElementById('switchText');
+            
+            if (kidsSwitch) {
+                kidsSwitch.addEventListener('change', function() {
+                    switchText.textContent = this.checked ? '开启' : '关闭';
+                });
+            }
+        });
+
+        // AI生成谜题数据库
+        const aiRiddleDatabase = [
+            { question: '一口咬掉牛尾巴', answer: '告', hint: '牛字下面加口', type: '字谜' },
+            { question: '千里相逢', answer: '重', hint: '千+里', type: '字谜' },
+            { question: '画时圆，写时方，冬时短，夏时长', answer: '日', hint: '天上的', type: '字谜' },
+            { question: '一人一张口，口下长只手', answer: '拿', hint: '人+一+口+手', type: '字谜' },
+            { question: '四面都是山，山山都相连', answer: '田', hint: '四个山字围起来', type: '字谜' },
+            { question: '左边绿，右边红，左右相遇起凉风', answer: '秋', hint: '禾+火', type: '字谜' },
+            { question: '十个哥哥', answer: '克', hint: '十+兄', type: '字谜' },
+            { question: '最快的速度', answer: '一日千里', hint: '一天能跑千里', type: '成语' },
+            { question: '最大的手术', answer: '脱胎换骨', hint: '完全改变', type: '成语' },
+            { question: '耳朵长，尾巴短，只吃菜，不吃饭', answer: '兔子', hint: '蹦蹦跳跳', type: '动物' },
+            { question: '身穿花衣爱打扮，一对翅膀光闪闪', answer: '蝴蝶', hint: '会飞的昆虫', type: '动物' },
+            { question: '有面没有口，有脚没有手', answer: '桌子', hint: '家具', type: '物品' },
+            { question: '独木造高楼，没瓦没砖头', answer: '伞', hint: '遮雨用', type: '物品' }
+        ];
+
+        // AI智能出题
+        function generateRiddleWithAI() {
+            const btn = document.querySelector('.ai-generate-btn');
+            const originalText = btn.innerHTML;
+            
+            btn.innerHTML = '<span>🤔</span><span>AI 思考中...</span>';
+            btn.disabled = true;
+            
+            setTimeout(() => {
+                const randomIndex = Math.floor(Math.random() * aiRiddleDatabase.length);
+                const riddle = aiRiddleDatabase[randomIndex];
+                
+                document.getElementById('riddleQuestion').value = riddle.question;
+                document.getElementById('riddleAnswer').value = riddle.answer;
+                document.getElementById('riddleHint').value = riddle.hint;
+                document.getElementById('riddleType').value = riddle.type;
+                
+                btn.innerHTML = originalText;
+                btn.disabled = false;
+                
+                showToast('✨ AI已为您生成一道' + riddle.type + '！');
+            }, 1500);
+        }
+
+        // 显示提示消息
+        function showToast(message) {
+            const toast = document.createElement('div');
+            toast.style.cssText = `
+                position: fixed;
+                top: 50%;
+                left: 50%;
+                transform: translate(-50%, -50%);
+                background: rgba(0,0,0,0.8);
+                color: white;
+                padding: 15px 30px;
+                border-radius: 10px;
+                font-size: 16px;
+                z-index: 9999;
+            `;
+            toast.textContent = message;
+            document.body.appendChild(toast);
+            
+            setTimeout(() => {
+                toast.remove();
+            }, 2000);
+        }
+
+        // 加载答题
+        function loadAnswerRiddle() {
+            const unanswered = riddles.filter(r => !answeredRiddles.includes(r.id));
+            const content = document.getElementById('answerContent');
+
+            if (unanswered.length === 0) {
+                content.innerHTML = `
+                    <div class="empty-state">
+                        <div class="icon">🎉</div>
+                        <p>太棒了！你已经答完了所有谜题！</p>
+                        <p style="margin-top: 10px; color: #999;">等待新谜题发布...</p>
+                    </div>
+                `;
+                return;
+            }
+
+            const riddle = unanswered[0];
+            content.innerHTML = `
+                <div class="riddle-card">
+                    <div class="riddle-header">
+                        <div class="riddle-author">
+                            <div class="author-avatar">${riddle.authorAvatar}</div>
+                            <div>
+                                <div class="author-name">${riddle.author}</div>
+                                <div style="font-size: 12px; color: #999;">刚刚</div>
+                            </div>
+                        </div>
+                        <span class="riddle-type">${riddle.type}</span>
+                    </div>
+                    <div class="riddle-content">${riddle.question}</div>
+                    <div class="hint-box">
+                        <strong>💡 提示：</strong>${riddle.hint}
+                    </div>
+                    <div class="answer-section">
+                        <input type="text" id="answerInput" placeholder="请输入你的答案" onkeypress="if(event.key==='Enter')submitAnswer(${riddle.id})">
+                        <button class="answer-btn" onclick="submitAnswer(${riddle.id})">提交</button>
+                    </div>
+                    <button class="skip-btn" onclick="skipRiddle(${riddle.id})">跳过此题</button>
+                </div>
+            `;
+        }
+
+        // 跳过题目
+        function skipRiddle(riddleId) {
+            if (confirm('确定要跳过这道题吗？')) {
+                answeredRiddles.push(riddleId);
+                saveAnsweredRiddles();
+                loadAnswerRiddle();
+            }
+        }
+
+        // 提交答案
+        function submitAnswer(riddleId) {
+            const input = document.getElementById('answerInput');
+            const userAnswer = input.value.trim();
+
+            if (!userAnswer) {
+                alert('请输入答案！');
+                return;
+            }
+
+            const riddle = riddles.find(r => r.id === riddleId);
+            const isCorrect = userAnswer === riddle.answer;
+
+            // 记录历史
+            history.unshift({
+                id: Date.now(),
+                question: riddle.question,
+                userAnswer,
+                correctAnswer: riddle.answer,
+                isCorrect,
+                time: new Date().toLocaleString()
+            });
+            saveHistory();
+
+            // 标记已答
+            answeredRiddles.push(riddleId);
+            saveAnsweredRiddles();
+
+            if (isCorrect) {
+                currentUser.streak++;
+                // 答对加10分，儿童谜加5分
+                const isKidsRiddle = riddle.type.includes('📚');
+                const points = isKidsRiddle ? 5 : 10;
+                currentUser.points += points;
+                saveUser();
+                showDrumAnimation();
+                setTimeout(() => {
+                    loadAnswerRiddle();
+                }, 2000);
+            } else {
+                currentUser.streak = 0;
+                saveUser();
+                alert(`答错了！正确答案是：${riddle.answer}`);
+                loadAnswerRiddle();
+            }
+        }
+
+        // 显示敲鼓动画
+        function showDrumAnimation() {
+            const animation = document.getElementById('drumAnimation');
+            animation.classList.add('show');
+
+            const waves = animation.querySelectorAll('.wave');
+            waves.forEach(wave => {
+                wave.style.animation = 'none';
+                setTimeout(() => {
+                    wave.style.animation = '';
+                }, 10);
+            });
+
+            setTimeout(() => {
+                animation.classList.remove('show');
+            }, 2000);
+        }
+
+        // 加载排行榜
+        function loadRankList() {
+            const container = document.getElementById('rankContainer');
+            
+            // 获取有积分的用户
+            const usersWithPoints = allUsers.filter(u => u.points > 0);
+            
+            if (usersWithPoints.length === 0) {
+                container.innerHTML = `
+                    <div class="rank-empty">
+                        <div class="icon">🏆</div>
+                        <p>尚未有人参与排名</p>
+                        <p style="font-size: 14px; margin-top: 10px; color: #999;">快来答题获得积分吧！</p>
+                    </div>
+                `;
+                return;
+            }
+            
+            // 按积分排序
+            usersWithPoints.sort((a, b) => b.points - a.points);
+            
+            // 取前10名
+            const top10 = usersWithPoints.slice(0, 10);
+            
+            // 渲染前三名
+            let html = '<div class="rank-top3">';
+            const top3 = top10.slice(0, 3);
+            const crowns = ['👑', '🥈', '🥉'];
+            const rankClass = ['first', 'second', 'third'];
+            
+            top3.forEach((user, index) => {
+                const borderColor = index === 0 ? '#FFD700' : index === 1 ? '#C0C0C0' : '#CD7F32';
+                html += `
+                    <div class="rank-podium ${rankClass[index]}">
+                        <div class="rank-crown">${crowns[index]}</div>
+                        <div class="rank-avatar" style="border-color: ${borderColor};">${user.avatar}</div>
+                        <div class="rank-number" style="background: ${borderColor}; color: ${index < 2 ? '#333' : 'white'};">${index + 1}</div>
+                        <div class="rank-name">${user.name}</div>
+                        <div class="rank-score">${user.points}分</div>
+                    </div>
+                `;
+            });
+            html += '</div>';
+            
+            // 渲染4-10名
+            if (top10.length > 3) {
+                html += '<div class="rank-list">';
+                top10.slice(3).forEach((user, index) => {
+                    html += `
+                        <div class="rank-item">
+                            <div class="rank-item-rank">${index + 4}</div>
+                            <div class="rank-item-avatar">${user.avatar}</div>
+                            <div class="rank-item-info">
+                                <div class="rank-item-name">${user.name}</div>
+                                <div class="rank-item-level">${user.level}</div>
+                            </div>
+                            <div class="rank-item-score">${user.points}</div>
+                        </div>
+                    `;
+                });
+                html += '</div>';
+            }
+            
+            container.innerHTML = html;
+        }
+
+        // 加载历史记录
+        function loadHistory() {
+            const list = document.getElementById('historyList');
+
+            if (history.length === 0) {
+                list.innerHTML = `
+                    <div class="empty-state">
+                        <div class="icon">📜</div>
+                        <p>暂无记录，开始你的灯谜之旅吧！</p>
+                    </div>
+                `;
+                return;
+            }
+
+            list.innerHTML = history.map(item => `
+                <div class="history-item">
+                    <div class="history-info">
+                        <h4>${item.question}</h4>
+                        <p>${item.time}</p>
+                    </div>
+                    <span class="history-result ${item.isCorrect ? 'correct' : 'wrong'}">
+                        ${item.isCorrect ? '✓ 答对' : '✗ 答错'}
+                    </span>
+                </div>
+            `).join('');
+        }
+
+        // 保存数据
+        function saveRiddles() {
+            localStorage.setItem('riddles', JSON.stringify(riddles));
+        }
+
+        function saveHistory() {
+            localStorage.setItem('history', JSON.stringify(history));
+        }
+
+        function saveAnsweredRiddles() {
+            localStorage.setItem('answeredRiddles', JSON.stringify(answeredRiddles));
+        }
+
+        function saveUser() {
+            localStorage.setItem('currentUser', JSON.stringify(currentUser));
+            // 更新allUsers中的用户信息
+            const userIndex = allUsers.findIndex(u => u.name === currentUser.name);
+            if (userIndex !== -1) {
+                allUsers[userIndex] = {...currentUser};
+                localStorage.setItem('allUsers', JSON.stringify(allUsers));
+            }
+            updateUserInfo();
+        }
+
+        // 页面加载时初始化
+        window.onload = init;
+    </script>
+</body>
+</html>
